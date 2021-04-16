@@ -2,8 +2,11 @@ const fs = require('fs'),
   process = require('process'),
   Koa = require('koa'),
   Router = require('@koa/router'),
+  Static = require('koa-static-server'),
   axios = require('axios'),
   MiniSearch = require('minisearch')
+
+var SlackWebhookUrl = ''
 
 let search = new MiniSearch({
   fields: ['question', 'answer'],
@@ -54,14 +57,51 @@ function loadData() {
   })
 }
 
-loadData().then(() => {
+async function getSlackWebhook() {
+  let resp = await axios.get('http://consul-teller.node.consul:8500/v1/kv/answerbot/slack-webhook')
+  return resp.data[0].Value
+}
+
+function filteredSearch(query) {
+  const blocklist = ['how','i','to']
+  let FilteredArray = []
+  let QueryArray = query.split(/\s+/)
+  QueryArray.forEach((word) => {
+    if (word.length > 3) {
+      FilteredArray.push(word)
+    }
+  })
+
+  return search.search(FilteredArray.join(' '))
+}
+
+loadData().then(async () => {
   console.log('Test search:')
   console.log(search.search('how to disable feature toggle'))
+  SlackWebhookUrl = await getSlackWebhook()
+  let buf = Buffer.from(SlackWebhookUrl, 'base64')
+  SlackWebhookUrl = buf.toString('utf8')
+  console.log(SlackWebhookUrl)
 })
+
 
 const app = new Koa()
 app.use(require('koa-bodyparser')())
+app.use(require('@koa/cors')())
+app.use(Static({
+  rootDir: 'public',
+  rootPath: '/web'
+}))
 const router = new Router();
+
+router.get('/search/:EncodedQuery', (ctx, next) => {
+  let EncodedQuery = Buffer.from(ctx.params.EncodedQuery, 'base64')
+  let ret = filteredSearch(EncodedQuery.toString('utf8'))
+  if (ret.length > 5) {
+    ret.splice(5)
+  }
+  ctx.body = ret
+})
 
 router.get('/slack/', (ctx, next) => {
   console.log('Incoming event')
@@ -76,11 +116,16 @@ async function handleEvent(ctx) {
     if ('subtype' in ctx.request.body.event || HandledEventIds[ctx.request.body.event_id]) {
       console.log('Ignoring event')
     } else {
-      let results = search.search(ctx.request.body.event.text)
+      let results = filteredSearch(ctx.request.body.event.text)
       console.log(results)
       console.log('Sending message')
-      await axios.post('https://hooks.slack.com/services/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', {
-        text: `I found a similar question:\n${results[0].question}\n\nAnswer: ${results[0].answer}\n\nNot the answer you're looking for? You can find other possible answers here: http://www.wayfair.com.`,
+      let buf = Buffer.from(ctx.request.body.event.text, 'utf8')
+      console.log(SlackWebhookUrl)
+      await axios.post(SlackWebhookUrl, {
+        text: `I found a similar question:\n` + 
+          `${results[0].question}\n\n` +
+          `Answer: ${results[0].answer}\n\n` +
+          `Not the answer you're looking for? You can find other possible answers here: https://answerbot.kungfoo.info/web/#/search/${buf.toString('base64')}.`,
         thread_ts: ctx.request.body.event.ts,
       })
       HandledEventIds[ctx.request.body.event_id] = 1

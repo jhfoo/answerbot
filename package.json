@@ -19,11 +19,16 @@
   },
   "homepage": "https://github.com/jhfoo/answerbot#readme",
   "devDependencies": {
+    "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
     "axios": "^0.21.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
+    "koa-static-server": "^1.5.2",
     "minisearch": "^3.0.2",
     "supervisor": "^0.12.0"
+  },
+  "dependencies": {
+    "@vue/cli": "^4.5.12"
   }
 }
