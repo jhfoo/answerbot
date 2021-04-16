@@ -1,0 +1,38 @@
+Hi all, I am looking to find all the feature toggles that use #wms-platform for notification. I want to move the notifications to another channel due to a rename in our department. Is there any way to find a list of such FTs or a query I could execute somewhere?
+You can query the database directly, bosqlagc114, with the channel for a list of FTs
+
+Can I get some help with disabling a feature toggle for a decoupled app for just my session? When I use ft_override_enable_aisle_promotions_for_all_suppliers=OFF to turn off the feature toggle I can see that it works on my dev machine through the debugger, but on the master branch I am still being told it is on in the decoupled app. To query the feature toggle I am using in python the code below. Should I be doing .enabled after getting the info back? here is a link to the PR (in the file ucms_partner_home/endpoints/apis.py)
+The ft_override URL param is only supported on PHP monolith apps, so it won't work in python
+
+Hi team, does anybody can help me giving me admin access to the repository I have just created? https://github.csnzoo.com/shared/customs-core I forgot to add the wayfair.yaml before the migration
+Try running this job. It should sync up what it's in your wayfair.yml https://build.csnzoo.com/view/Release%20Engineering/job/initialize_repository_collaborators/
+
+Could I be added as an admin to the docs.csnzoo.com repo? Need to make a few changes & the only CODEOWNER is on PTO until next week. I'd like to be an admin so that I can update the CODEOWNERS file to add a few others from DevAccel to have more depth in the reviewer pool.
+if you open a PR to add yourself to the wayfair.yml, we can admin-force the approval and merge for you, that will make you an admin
+
+Hi Team, we have a repository NetworkPerformance . Wanted to add @jkey1 as an admin there. I am not the admin and none of my team members are. I added @jkey1 to wayfair.yml as one of the owners. How & where can I confirm if he has been added as an admin?
+as long as you’re added to the wayfair.yml you’ll be an admin for the repo
+
+Is there any [ideally easy] way to block merges on a repo during certain times of the day?
+Hey :corgi: , we discourage these kinds of solutions and prefer merges to feel safe enough to deploy through enough automation and testing
+
+Hey team, is there any sort of release identifier that is set in the monolith during integrator deploys? I'm in the process of setting up a Sentry (error monitoring) POC and would like to enable release monitoring which would require an identifier https://docs.sentry.io/platforms/php/configuration/releases/
+Yes, there's a deploy hash for each release. You can see them in APM under the deployments section
+
+hello team im having issues transferring my own repo to shared in github https://build.csnzoo.com/view/Release%20Engineering/job/transfer_github_personal_repo_to_shared_organization/3612/console all it is is a shell repo with wayfair.yml https://github.csnzoo.com/rmiskin/notif-batch-replicator (edited) 
+Here is a link on how to transfer a repo to shared https://infohub.corp.wayfair.com/display/ENG/Migrating+a+personal+GitHub+repository+to+shared+organization
+
+hey, does anyone know if it is possible to find metrics for the number of times code had to be rolled back in production? Trying to get some numbers for our OKRs
+check with #golden4-forum, they track metrics like our "change failure rate" (CFR) which sounds like the metric you're looking for
+
+I'm trying to understand if there's a way to know if a feature toggle's value has successfully updated across all servers/datacenters
+If you click the Monitor value you can see the feature toggle value in all datacenters: https://admin.wayfair.com/v/feature/monitor_view?id=20422&name=enable_top_nav_right_rail_links
+
+Want to add a new feature toggle in dev, but that page is not working. is this team still responsible for that?
+You need to use the legacy tool in dev: http://adminwayfaircom.csnzoo.com/v/feature/index
+
+Who is the right person to talk with about github infrastructure? I want to understand how to scope a firewall rule to give some machines access to github.csnzoo.com (ssh and http(s))
+Hi, we're the right team. 
+
+hey rel eng, do we have alerting from github side for webhooks that fails ? I would like to setup alerting for codeowners hooks with secure/php
+if you can find the relevant logs in https://kibanagit.csnzoo.com/ we should be able to put something together with retriever to make alerts on it

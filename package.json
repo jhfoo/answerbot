@@ -1,0 +1,29 @@
+{
+  "name": "answerbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "supervisor -n exit src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhfoo/answerbot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jhfoo/answerbot/issues"
+  },
+  "homepage": "https://github.com/jhfoo/answerbot#readme",
+  "devDependencies": {
+    "@koa/router": "^10.0.0",
+    "axios": "^0.21.1",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "minisearch": "^3.0.2",
+    "supervisor": "^0.12.0"
+  }
+}
