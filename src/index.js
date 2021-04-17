@@ -4,13 +4,17 @@ const fs = require('fs'),
   Router = require('@koa/router'),
   Static = require('koa-static-server'),
   axios = require('axios'),
-  MiniSearch = require('minisearch')
+  MiniSearch = require('minisearch'),
+  stemmer = require('porter-stemmer-english')
 
 var SlackWebhookUrl = ''
-
+var StopWords = ['i','the','to','and','hi']
 let search = new MiniSearch({
   fields: ['question', 'answer'],
   storeFields: ['question', 'answer'],
+  processTerm: (term) => {
+    return StopWords.includes(term) ? null : stemmer(term.toLowerCase())
+  },
   searchOptions: {
     boost: {
       question: 2,

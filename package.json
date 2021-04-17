@@ -26,6 +26,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-static-server": "^1.5.2",
     "minisearch": "^3.0.2",
+    "porter-stemmer-english": "^1.0.1",
     "supervisor": "^0.12.0"
   },
   "dependencies": {
